@@ -2,11 +2,14 @@ package com.dengue_webapp.dengue_webapp.controller;
 
 
 import com.dengue_webapp.dengue_webapp.dto.request.RequestPHIDto;
+import com.dengue_webapp.dengue_webapp.dto.response.ResponsePHIDto;
 import com.dengue_webapp.dengue_webapp.service.PHIService;
 import com.dengue_webapp.dengue_webapp.util.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/phi")
@@ -22,7 +25,6 @@ public class PHIController {
     @PostMapping
     public ResponseEntity<StandardResponse> createPHIOfficerInfo(@RequestBody RequestPHIDto dto){
        phiService.createPHI(dto);
-
        return new ResponseEntity<>(
                new StandardResponse(201, "Successfully created a PHI Officer", dto),
                HttpStatus.CREATED
@@ -34,31 +36,47 @@ public class PHIController {
 //        return "Create PHI Officer Info";
 //    }
 
-    @GetMapping
-    public String getPHIOfficerInfo(){
-        return "PHI Officer Info";
-    }
+//    @GetMapping
+//    public String getPHIOfficerInfo(){
+//        return "PHI Officer Info";
+//    }
 
 
     @GetMapping("/{id}")
-    public String getPHIOfficerInfo(@PathVariable String id){
-        return "PHI Officer Info for " + id;
+    public ResponseEntity<StandardResponse> getPHIOfficerInfo(@PathVariable String id){
+        ResponsePHIDto dto = phiService.getPHI(id);
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Successfully get PHI Officer Info", dto),
+                HttpStatus.OK
+        );
     }
 
 
     @GetMapping(path = "/list", params = {"searchText", "page", "size"})
-    public String getAllPHIOfficerInfo(@RequestParam String searchText, @RequestParam int page, @RequestParam int size){
-        return "All PHI Officer Info List for " + searchText + "" + page + "" + size + "";
+    public ResponseEntity<StandardResponse> getAllPHIOfficerInfo(@RequestParam String searchText, @RequestParam int page, @RequestParam int size){
+        List<ResponsePHIDto> dtos = phiService.getAllPHI(searchText, page, size);
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Successfully get PHI Officer Info", dtos),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping( "/{id}")
-    public String updatePHIOfficerInfo(@PathVariable String id){
-        return "Update PHI Officer Info for " + id;
+    public ResponseEntity<StandardResponse> updatePHIOfficerInfo(@PathVariable String id, @RequestBody RequestPHIDto dto){
+        phiService.updatePHI(id, dto);
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Successfully update PHI Officer Info", dto),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping(path = "/{id}")
-    public String deletePHIOfficerInfo(@PathVariable String id){
-        return "Delete PHI Officer Info for " + id;
+    public ResponseEntity<StandardResponse> deletePHIOfficerInfo(@PathVariable String id){
+       phiService.deletePHI(id);
+       return new ResponseEntity<>(
+               new StandardResponse(200, "Successfully delete PHI Officer Info", null),
+               HttpStatus.NO_CONTENT
+       );
     }
 
 
